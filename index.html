@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WannaCry Incident Report // 8-BIT</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* --- 8-BIT THEME ENGINE --- */
+        :root {
+            --bg-color: #050510;
+            --terminal-green: #4ade80;
+            --alert-red: #ef4444;
+            --neon-blue: #3b82f6;
+            --panel-bg: #0f172a;
+        }
+
+        /* Digital Starfield Animation */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: transparent;
+            z-index: -2;
+        }
+        .stars::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 4s infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.3; transform: translateY(-10px); }
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #e2e8f0;
+            font-family: 'VT323', monospace;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Backgrounds */
+        .city-background {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 40vh;
+            background: linear-gradient(to top, #020617 0%, transparent 100%), url('city-bg.png');
+            background-repeat: repeat-x; background-position: bottom center; background-size: auto 100%;
+            image-rendering: pixelated; z-index: -1; opacity: 0.6;
+            animation: moveCity 60s linear infinite;
+        }
+        @keyframes moveCity { from { background-position: 0 bottom; } to { background-position: 100% bottom; } }
+
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px; z-index: 50; pointer-events: none;
+        }
+
+        /* Typography */
+        h1, h2, h3, .pixel-font { font-family: 'Press Start 2P', cursive; }
+
+        /* Components */
+        .pixel-box {
+            background-color: rgba(15, 23, 42, 0.95);
+            border: 4px solid #1e293b;
+            box-shadow: 8px 8px 0px 0px #000000;
+            transition: all 0.1s;
+        }
+        .pixel-box:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0px 0px #000000; border-color: var(--neon-blue); }
+
+        .pixel-btn {
+            font-family: 'Press Start 2P', cursive; font-size: 10px; padding: 15px 25px;
+            border: 4px solid white; background: var(--neon-blue); color: white;
+            box-shadow: 6px 6px 0px 0px #000000; cursor: pointer; text-transform: uppercase;
+        }
+        .pixel-btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0px 0px #000000; }
+        .pixel-btn.green { background: #16a34a; border-color: #4ade80; }
+
+        /* Stat Counter Animation */
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--alert-red);
+            text-shadow: 2px 2px #000;
+        }
+
+        /* Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            border-left: 2px solid #475569;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            background: var(--terminal-green);
+            border: 2px solid #000;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #475569; border: 2px solid #020617; }
+
+        /* Code Block Styling */
+        .code-block {
+            background: #000;
+            border: 2px solid #4ade80;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            color: #4ade80;
+        }
+
+        /* Animations */
+        .typing-cursor::after { content: '▋'; animation: blink 1s step-start infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Tab Navigation */
+        .tab-btn {
+            padding: 10px 20px;
+            background: #1e293b;
+            border: 2px solid #475569;
+            color: #94a3b8;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+        }
+        .tab-btn.active {
+            background: var(--neon-blue);
+            border-color: white;
+            color: white;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="stars"></div>
+    <div class="scanlines"></div>
+    <div class="city-background" id="city-bg"></div>
+
+    <div class="max-w-6xl mx-auto relative z-10 pb-20">
+        
+        <header class="text-center mb-12 pt-8">
+            <div class="inline-block bg-red-900/90 border-2 border-red-500 px-4 py-2 mb-6">
+                <span class="pixel-font text-red-400 text-[10px] tracking-widest animate-pulse">⚠ CRITICAL FAILURE DETECTED ⚠</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl text-white mb-4 leading-relaxed" style="text-shadow: 4px 4px #000;">
+                INCIDENT: <span class="text-cyan-400">WANNACRY</span>
+            </h1>
+            <p class="text-xl text-slate-400 font-mono">POST_MORTEM_ANALYSIS // ROOT_CAUSE_ID_RANSOMWARE</p>
+            <p class="text-lg text-slate-500 mt-2 font-bold">OPERATOR: RHYON C.F.S. | ID: 8-BIT</p>
+        </header>
+
+        <div class="flex flex-col md:flex-row justify-center gap-8 mb-12">
+            <button onclick="generateExecutiveBrief()" id="btn-summary" class="pixel-btn green">
+                [ GENERATE_BRIEF ]
+            </button>
+            <button onclick="toggleChat()" class="pixel-btn">
+                [ OPEN_TERMINAL ]
+            </button>
+        </div>
+
+        <div id="ai-summary-container" class="hidden mb-12 pixel-box border-l-8 border-l-green-500 p-6 bg-black/90 transition-all duration-500 ease-in-out">
+            <div class="flex justify-between items-start mb-4 border-b-2 border-slate-700 pb-4">
+                <h3 class="text-green-400 text-xs pixel-font">>> EXECUTIVE_SUMMARY.TXT</h3>
+                <button onclick="closeSummary()" class="text-red-500 hover:text-white font-bold pixel-font">[X]</button>
+            </div>
+            <div id="ai-summary-content" class="text-lg md:text-xl leading-relaxed text-green-300 font-mono"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="pixel-box p-6 text-center border-red-500">
+                <div class="text-red-500 pixel-font text-xs mb-3">SYSTEMS_INFECTED</div>
+                <div class="stat-number" id="stat-systems">0</div>
+                <div class="text-slate-400 text-sm mt-2">200,000+ Computers</div>
+            </div>
+            <div class="pixel-box p-6 text-center border-orange-500">
+                <div class="text-orange-500 pixel-font text-xs mb-3">COUNTRIES_AFFECTED</div>
+                <div class="stat-number text-orange-500" id="stat-countries">0</div>
+                <div class="text-slate-400 text-sm mt-2">150+ Nations</div>
+            </div>
+            <div class="pixel-box p-6 text-center border-yellow-500">
+                <div class="text-yellow-500 pixel-font text-xs mb-3">DAMAGE_ESTIMATE</div>
+                <div class="stat-number text-yellow-500" id="stat-damage">$0</div>
+                <div class="text-slate-400 text-sm mt-2">USD Billions</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="pixel-box p-6 hover:border-red-500 group">
+                <h3 class="text-red-500 text-xs mb-4 pixel-font">01_VULNERABILITY</h3>
+                <div class="text-2xl text-white mb-2 font-bold">ROOT CAUSE: <span class="bg-red-900/50 px-2 text-red-200">EternalBlue</span></div>
+                <p class="text-lg text-slate-400 leading-relaxed mb-4">Exploitation of the SMBv1 protocol via the NSA-leaked EternalBlue tool. MS17-010 patches were available but not applied.</p>
+            </div>
+            <div class="pixel-box p-6 hover:border-orange-500 group">
+                <h3 class="text-orange-500 text-xs mb-4 pixel-font">02_SYSTEM_FAILURE</h3>
+                <div class="text-2xl text-white mb-2 font-bold">OPS FAILURE</div>
+                <p class="text-lg text-slate-400 leading-relaxed mb-4">Critical failure in Patch Management. Reliance on EOL Windows XP created massive attack surface.</p>
+            </div>
+            <div class="pixel-box p-6 hover:border-blue-500 group">
+                <h3 class="text-blue-500 text-xs mb-4 pixel-font">03_MITIGATION</h3>
+                <div class="text-2xl text-white mb-2 font-bold">KILL SWITCH</div>
+                <p class="text-lg text-slate-400 leading-relaxed mb-4">Domain registered by Marcus Hutchins halted propagation globally.</p>
+            </div>
+            <div class="pixel-box p-6 border-green-500 hover:bg-green-900/20">
+                <h3 class="text-green-500 text-xs mb-4 pixel-font">04_LESSONS_LEARNED</h3>
+                <ul class="space-y-4 text-lg text-slate-300">
+                    <li class="flex gap-3"><span class="text-green-500">></span> Automated Patching Systems</li>
+                    <li class="flex gap-3"><span class="text-green-500">></span> Test Offline Backups (BCP)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="pixel-box p-6 mb-12">
+            <div class="flex gap-2 mb-6 flex-wrap">
+                <button class="tab-btn active" onclick="switchTab('ioc')">IOCs</button>
+                <button class="tab-btn" onclick="switchTab('ransom')">RANSOM_INFO</button>
+                <button class="tab-btn" onclick="switchTab('timeline')">TIMELINE</button>
+                <button class="tab-btn" onclick="switchTab('related')">RELATED_ATTACKS</button>
+            </div>
+
+            <div id="tab-ioc" class="tab-content">
+                <h3 class="text-cyan-400 pixel-font text-xs mb-4">INDICATORS_OF_COMPROMISE</h3>
+                <div class="code-block">
+<pre>// File Hashes (SHA-256)
+24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c
+ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa
+
+// Bitcoin Wallets (Ransom Payments)
+115p7UMMngoj1pMvkpHijcRdfJNXj6LrLn
+12t9YDPgwueZ9NyMgw519p7AA8isjr6SMw
+13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94
+
+// Network Indicators
+Port 445/TCP (SMB)
+Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
+                </div>
+            </div>
+
+            <div id="tab-ransom" class="tab-content hidden">
+                <h3 class="text-yellow-400 pixel-font text-xs mb-4">RANSOM_DETAILS</h3>
+                <div class="space-y-4 text-lg text-slate-300">
+                    <div class="flex justify-between border-b border-slate-700 pb-2">
+                        <span>Initial Demand:</span>
+                        <span class="text-yellow-400">$300 USD (Bitcoin)</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-700 pb-2">
+                        <span>After 3 Days:</span>
+                        <span class="text-orange-400">$600 USD (Bitcoin)</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-700 pb-2">
+                        <span>Deadline:</span>
+                        <span class="text-red-400">7 days (permanent loss)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-timeline" class="tab-content hidden">
+                <h3 class="text-green-400 pixel-font text-xs mb-4">ATTACK_TIMELINE</h3>
+                <div class="space-y-6">
+                    <div class="timeline-item">
+                        <div class="text-green-400 font-bold mb-1">April 14, 2017</div>
+                        <div class="text-slate-300">Shadow Brokers leak EternalBlue exploit</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="text-yellow-400 font-bold mb-1">May 12, 2017 - 07:44 UTC</div>
+                        <div class="text-slate-300">First infections detected in Asia</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="text-red-400 font-bold mb-1">May 12, 2017 - 15:00 UTC</div>
+                        <div class="text-slate-300">Peak infection: 200,000+ systems globally</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="text-cyan-400 font-bold mb-1">May 12, 2017 - 15:03 UTC</div>
+                        <div class="text-slate-300">Marcus Hutchins registers kill switch domain</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-related" class="tab-content hidden">
+                <h3 class="text-purple-400 pixel-font text-xs mb-4">RELATED_INCIDENTS</h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-800 border-l-4 border-purple-500">
+                        <div class="font-bold text-white text-xl mb-2">NotPetya (June 2017)</div>
+                        <p class="text-slate-300 mb-2">A wiper attack disguised as ransomware. Also used EternalBlue.</p>
+                        <div class="text-sm text-slate-400">• $10 Billion+ Damages</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="chat-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm">
+            <div class="w-full max-w-2xl bg-slate-900 border-4 border-white shadow-[12px_12px_0px_0px_#3b82f6] flex flex-col h-[600px]">
+                <div class="bg-blue-900 p-4 border-b-4 border-white flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 bg-green-500 animate-pulse"></div>
+                        <span class="pixel-font text-xs text-white">INCIDENT_COMMANDER_AI</span>
+                    </div>
+                    <button onclick="toggleChat()" class="text-white hover:text-red-400 pixel-font text-xs">[CLOSE]</button>
+                </div>
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-6 font-mono text-lg bg-black">
+                    <div class="flex gap-4">
+                        <span class="text-green-500 pixel-font text-xs mt-1">AI:</span>
+                        <p class="bg-slate-800 p-3 border-l-4 border-green-500 text-green-100 w-full">
+                            System Online. Accessing WannaCry forensic data... Ready for queries.
+                        </p>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-900 border-t-4 border-white flex gap-2">
+                    <span class="text-green-500 mt-3">></span>
+                    <input type="text" id="user-input" class="flex-1 bg-transparent border-none outline-none text-green-400 font-mono text-xl placeholder-slate-600" placeholder="Enter command..." onkeypress="handleEnter(event)">
+                    <button onclick="sendMessage()" class="pixel-btn text-[10px] py-2 px-4">SEND</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-16 text-center text-slate-500 text-sm border-t-2 border-slate-800 pt-8 pb-8">
+            <p class="pixel-font text-xs mb-2">CYBERSECURITY CAPSTONE PROJECT</p>
+            <p>Created by Rhyon C.F.S. | 2025</p>
+            <div class="mt-4 flex justify-center gap-6">
+                <button onclick="toggleAnimation()" class="text-xs text-slate-600 hover:text-white">[ TOGGLE_ANIMATION ]</button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /**
+         * PROJECT AGHOY // WANNACRY DASHBOARD v2.0
+         * Educational Incident Response Tool
+         * Created by: Rhyon C.F.S.
+         */
+
+        // --- 1. KNOWLEDGE BASE (The "Brain") ---
+        // Contains expanded details on Shadow Brokers, Ransomware logic, and IoCs.
+        const KNOWLEDGE_BASE = {
+            "brief": `### **Executive Briefing: WannaCry Incident**
+**1. Incident:** On May 12, 2017, a global ransomware cryptoworm infected 200,000+ systems across 150 countries.
+**2. Root Cause:** The attack exploited the **EternalBlue** vulnerability (CVE-2017-0144) in the SMBv1 protocol. The exploit was developed by the NSA and leaked by the **Shadow Brokers**.
+**3. Impact:** The ransomware encrypted files and demanded **$300-$600 in Bitcoin**. It caused an estimated **$4 Billion** in global damages.
+**4. Remediation:** A "Kill Switch" domain was registered by Marcus Hutchins to halt propagation.`,
+
+            "eternalblue": "### **Technical Analysis: EternalBlue**\n\n**EternalBlue** (CVE-2017-0144) is an RCE exploit targeting the Microsoft Server Message Block (SMBv1) protocol.\n\n* **Origin:** Developed by the NSA; leaked by the **Shadow Brokers** on April 14, 2017.\n* **Mechanism:** It sends specially crafted packets to port 445, triggering a buffer overflow that allows the execution of arbitrary code (the DoublePulsar backdoor).",
+            
+            "kill switch": "### **The Kill Switch Mechanism**\n\nSecurity researcher **Marcus Hutchins** (@MalwareTechBlog) analyzed the malware code and found a hardcoded domain check:\n\n`iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com`\n\n**How it worked:** The malware tries to connect to this domain. If the connection **fails**, it encrypts files. If it **succeeds** (meaning the domain is live), the malware terminates. Hutchins registered it for $10.69, effectively stopping the attack.",
+            
+            "patch": "### **Defense: Patching & Mitigation**\n\n**The Fix:** Microsoft released **Security Bulletin MS17-010** in March 2017 (2 months prior to the attack).\n\n* **Immediate Action:** Apply MS17-010 to all Windows systems.\n* **Hardening:** Disable SMBv1 via Group Policy.\n* **Network:** Block TCP port 445 at the perimeter firewall.",
+            
+            "ransom": "### **Ransomware Details**\n\n* **Demand:** $300 USD in Bitcoin (doubled to $600 after 3 days).\n* **Payment:** Victims were told files would be lost permanently after 7 days.\n* **Wallets:** The attack utilized hardcoded Bitcoin addresses (e.g., `115p7UMM...`).\n* **Decryption:** Paying the ransom largely did **not** result in data recovery due to a manual processing flaw by the attackers.",
+            
+            "notpetya": "### **Related Incident: NotPetya**\n\nIn June 2017, **NotPetya** utilized the same EternalBlue exploit.\n\n* **Difference:** Unlike WannaCry, NotPetya was a **wiper**, not ransomware. It was designed to destroy data irreversibly, primarily targeting Ukraine's infrastructure. It caused over **$10 Billion** in damages, making it the costliest cyberattack in history.",
+
+            "ioc": "### **Indicators of Compromise (IoCs)**\n\n**File Hashes (SHA-256):**\n* `24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c`\n\n**Network:**\n* Traffic on Port 445 (SMB)\n* Connections to TOR exit nodes\n\n**Kill Switch Domain:**\n* `www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com`",
+
+            "default": "I am accessing the forensic database... \n\nMy analysis indicates this is related to the **WannaCry Ransomware** attack (May 2017). \n\n**Available Data Points:**\n* **EternalBlue / Shadow Brokers**\n* **The Kill Switch**\n* **Ransom Details / Bitcoin**\n* **NotPetya (Related Attack)**\n* **Indicators of Compromise (IoC)**"
+        };
+
+        // --- 2. ANIMATION LOGIC (Stats & Background) ---
+        
+        // Animates numbers from 0 to target
+        function animateValue(id, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                // Handle currency vs plain numbers
+                let value = Math.floor(progress * (end - start) + start);
+                let output = value.toLocaleString();
+                
+                if (id === "stat-damage") output = "$4 Billion"; // Hardcoded string for the currency stat
+
+                const el = document.getElementById(id);
+                if (el && id !== "stat-damage") el.innerHTML = output;
+                if (el && id === "stat-damage" && progress === 1) el.innerHTML = output;
+
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Toggle the city background animation for performance
+        function toggleAnimation() {
+            const bg = document.getElementById('city-bg');
+            const current = window.getComputedStyle(bg).animationPlayState;
+            bg.style.animationPlayState = current === 'running' ? 'paused' : 'running';
+            alert(current === 'running' ? "Background Animation: PAUSED" : "Background Animation: RESUMED");
+        }
+
+        // Initialize Animations on Load
+        window.onload = () => {
+            setTimeout(() => {
+                animateValue("stat-systems", 0, 230000, 2500);
+                animateValue("stat-countries", 0, 150, 2000);
+                animateValue("stat-damage", 0, 0, 2000); // Placeholder for string update
+            }, 500);
+        };
+
+        // --- 3. TAB LOGIC (Interactivity) ---
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            // Show selected tab
+            const selectedTab = document.getElementById('tab-' + tabName);
+            if (selectedTab) selectedTab.classList.remove('hidden');
+
+            // Update Button States
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.backgroundColor = '#1e293b';
+                btn.style.color = '#94a3b8';
+            });
+            
+            // Highlight clicked button
+            const activeBtn = event.target;
+            activeBtn.classList.add('active');
+            activeBtn.style.backgroundColor = '#3b82f6';
+            activeBtn.style.color = 'white';
+        }
+
+        // --- 4. CHAT & BRIEF LOGIC ---
+
+        function toggleChat() {
+            const modal = document.getElementById('chat-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) document.getElementById('user-input').focus();
+        }
+
+        function closeSummary() { 
+            document.getElementById('ai-summary-container').classList.add('hidden'); 
+        }
+
+        function handleEnter(e) { 
+            if (e.key === 'Enter') sendMessage(); 
+        }
+
+        // Simulated AI Response Handler
+        async function callSimulatedAI(prompt, type = "chat") {
+            // Simulate network latency for realism (800ms)
+            await new Promise(resolve => setTimeout(resolve, 800)); 
+
+            if (type === "brief") return KNOWLEDGE_BASE["brief"];
+
+            const p = prompt.toLowerCase();
+            
+            // Keyword Matching Logic
+            if (p.includes("eternal") || p.includes("exploit") || p.includes("nsa") || p.includes("broker")) return KNOWLEDGE_BASE["eternalblue"];
+            if (p.includes("kill") || p.includes("switch") || p.includes("domain") || p.includes("marcus")) return KNOWLEDGE_BASE["kill switch"];
+            if (p.includes("patch") || p.includes("fix") || p.includes("defend") || p.includes("mitigat")) return KNOWLEDGE_BASE["patch"];
+            if (p.includes("notpetya") || p.includes("petya") || p.includes("related") || p.includes("wiper")) return KNOWLEDGE_BASE["notpetya"];
+            if (p.includes("ransom") || p.includes("money") || p.includes("bitcoin") || p.includes("pay") || p.includes("wallet")) return KNOWLEDGE_BASE["ransom"];
+            if (p.includes("ioc") || p.includes("hash") || p.includes("indicator") || p.includes("check")) return KNOWLEDGE_BASE["ioc"];
+
+            return KNOWLEDGE_BASE["default"];
+        }
+
+        async function generateExecutiveBrief() {
+            const btn = document.getElementById('btn-summary');
+            const container = document.getElementById('ai-summary-container');
+            const contentDiv = document.getElementById('ai-summary-content');
+            
+            btn.innerText = "PROCESSING..."; 
+            btn.disabled = true;
+
+            const text = await callSimulatedAI("", "brief");
+            
+            contentDiv.innerHTML = marked.parse(text);
+            container.classList.remove('hidden');
+            btn.innerText = "[ GENERATE_BRIEF ]"; 
+            btn.disabled = false;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const msgs = document.getElementById('chat-messages');
+            
+            // Add User Message
+            msgs.innerHTML += `
+                <div class="flex gap-4 justify-end mb-4">
+                    <p class="bg-blue-900/50 p-3 border-r-4 border-blue-500 text-right text-white w-fit ml-auto font-mono text-sm">${text}</p>
+                    <span class="text-blue-400 pixel-font text-xs mt-1">YOU</span>
+                </div>`;
+            input.value = '';
+            
+            // Add Loading Indicator
+            const loadingId = 'loading-' + Date.now();
+            msgs.innerHTML += `
+                <div id="${loadingId}" class="flex gap-4 mb-4">
+                    <span class="text-green-500 pixel-font text-xs mt-1">AI</span>
+                    <p class="bg-slate-800 p-3 border-l-4 border-green-500 text-slate-300 w-fit text-xs">ANALYZING...</p>
+                </div>`;
+            msgs.scrollTop = msgs.scrollHeight;
+
+            // Get Response
+            const response = await callSimulatedAI(text, "chat");
+            
+            // Remove Loading and Add AI Message
+            document.getElementById(loadingId).remove();
+            msgs.innerHTML += `
+                <div class="flex gap-4 mb-4">
+                    <span class="text-green-500 pixel-font text-xs mt-1">AI</span>
+                    <div class="bg-slate-800 p-3 border-l-4 border-green-500 text-slate-300 w-full prose prose-invert prose-sm font-mono">
+                        ${marked.parse(response)}
+                    </div>
+                </div>`;
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+    </script>
+</body>
+</html>
