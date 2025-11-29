@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        /* --- 8-BIT THEME ENGINE --- */
         :root {
             --bg-color: #050510;
             --terminal-green: #4ade80;
@@ -18,8 +17,6 @@
             --neon-blue: #3b82f6;
             --panel-bg: #0f172a;
         }
-
-        /* Digital Starfield Animation */
         .stars {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -57,7 +54,6 @@
             position: relative;
         }
 
-        /* Backgrounds */
         .city-background {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 40vh;
             background: linear-gradient(to top, #020617 0%, transparent 100%), url('city-bg.png');
@@ -73,10 +69,8 @@
             background-size: 100% 4px; z-index: 50; pointer-events: none;
         }
 
-        /* Typography */
         h1, h2, h3, .pixel-font { font-family: 'Press Start 2P', cursive; }
 
-        /* Components */
         .pixel-box {
             background-color: rgba(15, 23, 42, 0.95);
             border: 4px solid #1e293b;
@@ -93,7 +87,6 @@
         .pixel-btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0px 0px #000000; }
         .pixel-btn.green { background: #16a34a; border-color: #4ade80; }
 
-        /* Stat Counter Animation */
         .stat-number {
             font-size: 3rem;
             font-weight: bold;
@@ -101,7 +94,6 @@
             text-shadow: 2px 2px #000;
         }
 
-        /* Timeline */
         .timeline-item {
             position: relative;
             padding-left: 30px;
@@ -118,12 +110,10 @@
             border: 2px solid #000;
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 12px; }
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #475569; border: 2px solid #020617; }
 
-        /* Code Block Styling */
         .code-block {
             background: #000;
             border: 2px solid #4ade80;
@@ -134,11 +124,9 @@
             color: #4ade80;
         }
 
-        /* Animations */
         .typing-cursor::after { content: '▋'; animation: blink 1s step-start infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* Tab Navigation */
         .tab-btn {
             padding: 10px 20px;
             background: #1e293b;
@@ -224,7 +212,7 @@
                 <div class="text-2xl text-white mb-2 font-bold">KILL SWITCH</div>
                 <p class="text-lg text-slate-400 leading-relaxed mb-4">Domain registered by Marcus Hutchins halted propagation globally.</p>
             </div>
-            <div class="pixel-box p-6 border-green-500 hover:bg-green-900/20">
+            <div class="pixel-box p-6 hover:border-green-500 group">
                 <h3 class="text-green-500 text-xs mb-4 pixel-font">04_LESSONS_LEARNED</h3>
                 <ul class="space-y-4 text-lg text-slate-300">
                     <li class="flex gap-3"><span class="text-green-500">></span> Automated Patching Systems</li>
@@ -376,9 +364,6 @@ Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
             "default": "I am accessing the forensic database... \n\nMy analysis indicates this is related to the **WannaCry Ransomware** attack (May 2017). \n\n**Available Data Points:**\n* **EternalBlue / Shadow Brokers**\n* **The Kill Switch**\n* **Ransom Details / Bitcoin**\n* **NotPetya (Related Attack)**\n* **Indicators of Compromise (IoC)**"
         };
 
-        // --- 2. ANIMATION LOGIC (Stats & Background) ---
-        
-        // Animates numbers from 0 to target
         function animateValue(id, start, end, duration) {
             let startTimestamp = null;
             const step = (timestamp) => {
@@ -388,7 +373,7 @@ Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
                 let value = Math.floor(progress * (end - start) + start);
                 let output = value.toLocaleString();
                 
-                if (id === "stat-damage") output = "$4 Billion"; // Hardcoded string for the currency stat
+                if (id === "stat-damage") output = "$4 Billion";
 
                 const el = document.getElementById(id);
                 if (el && id !== "stat-damage") el.innerHTML = output;
@@ -399,7 +384,6 @@ Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
             window.requestAnimationFrame(step);
         }
 
-        // Toggle the city background animation for performance
         function toggleAnimation() {
             const bg = document.getElementById('city-bg');
             const current = window.getComputedStyle(bg).animationPlayState;
@@ -407,40 +391,32 @@ Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
             alert(current === 'running' ? "Background Animation: PAUSED" : "Background Animation: RESUMED");
         }
 
-        // Initialize Animations on Load
         window.onload = () => {
             setTimeout(() => {
                 animateValue("stat-systems", 0, 230000, 2500);
                 animateValue("stat-countries", 0, 150, 2000);
-                animateValue("stat-damage", 0, 0, 2000); // Placeholder for string update
+                animateValue("stat-damage", 0, 0, 2000);
             }, 500);
         };
 
-        // --- 3. TAB LOGIC (Interactivity) ---
         function switchTab(tabName) {
-            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(el => {
                 el.classList.add('hidden');
             });
-            // Show selected tab
             const selectedTab = document.getElementById('tab-' + tabName);
             if (selectedTab) selectedTab.classList.remove('hidden');
 
-            // Update Button States
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
                 btn.style.backgroundColor = '#1e293b';
                 btn.style.color = '#94a3b8';
             });
             
-            // Highlight clicked button
             const activeBtn = event.target;
             activeBtn.classList.add('active');
             activeBtn.style.backgroundColor = '#3b82f6';
             activeBtn.style.color = 'white';
         }
-
-        // --- 4. CHAT & BRIEF LOGIC ---
 
         function toggleChat() {
             const modal = document.getElementById('chat-modal');
@@ -465,7 +441,6 @@ Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
 
             const p = prompt.toLowerCase();
             
-            // Keyword Matching Logic
             if (p.includes("eternal") || p.includes("exploit") || p.includes("nsa") || p.includes("broker")) return KNOWLEDGE_BASE["eternalblue"];
             if (p.includes("kill") || p.includes("switch") || p.includes("domain") || p.includes("marcus")) return KNOWLEDGE_BASE["kill switch"];
             if (p.includes("patch") || p.includes("fix") || p.includes("defend") || p.includes("mitigat")) return KNOWLEDGE_BASE["patch"];
@@ -499,7 +474,6 @@ Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
 
             const msgs = document.getElementById('chat-messages');
             
-            // Add User Message
             msgs.innerHTML += `
                 <div class="flex gap-4 justify-end mb-4">
                     <p class="bg-blue-900/50 p-3 border-r-4 border-blue-500 text-right text-white w-fit ml-auto font-mono text-sm">${text}</p>
@@ -507,7 +481,6 @@ Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
                 </div>`;
             input.value = '';
             
-            // Add Loading Indicator
             const loadingId = 'loading-' + Date.now();
             msgs.innerHTML += `
                 <div id="${loadingId}" class="flex gap-4 mb-4">
@@ -516,10 +489,8 @@ Domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</pre>
                 </div>`;
             msgs.scrollTop = msgs.scrollHeight;
 
-            // Get Response
             const response = await callSimulatedAI(text, "chat");
             
-            // Remove Loading and Add AI Message
             document.getElementById(loadingId).remove();
             msgs.innerHTML += `
                 <div class="flex gap-4 mb-4">
