@@ -1,6 +1,6 @@
 # Project Aghoy: WannaCry Incident Dashboard (8-Bit Edition)
 
-> **A gamified, interactive post-mortem of the 2017 WannaCry Ransomware attack, featuring a simulated AI Incident Commander.**
+> **A gamified, interactive post-mortem of the 2017 WannaCry Ransomware attack, featuring a simulated "AI" Incident Commander.**
 
 [![Live Demo](https://img.shields.io/badge/DEMO-LIVE_SITE-success?style=for-the-badge&logo=github)](https://8-bitrhyon.github.io/wannacry-dashboard/)
 [![Tech Stack](https://img.shields.io/badge/TECH-HTML5_%7C_Tailwind_%7C_JS-blue?style=for-the-badge)](https://github.com/8-BitRhyon/wannacry-dashboard)
@@ -11,7 +11,7 @@
 
 ## Overview
 
-**Project Aghoy** re-imagines the traditional cybersecurity case study as an immersive, 8-bit Incident Command Center.
+**Project Aghoy** "re-imagines" the traditional cybersecurity case study as an immersive, 8-bit Incident Command Center.
 
 Instead of reading a static PDF report, users interact with a **Simulated AI Operating System** to uncover tactical failures (EternalBlue), strategic mitigations (The Kill Switch), and operational lessons (Patch Management) from the historic WannaCry outbreak.
 
@@ -20,12 +20,12 @@ Instead of reading a static PDF report, users interact with a **Simulated AI Ope
 ## Key Features
 
 ### Simulated AI Incident Commander
-* **No API Keys Required:** Features a custom-built, rule-based Natural Language Processing (NLP) engine that simulates an AI conversation.
+* **No API Keys Required:** Features a custom-built, rule-based Pattern-Matching Response System that simulates an AI conversation.
 * **Context-Aware:** Responds intelligently to specific keywords like `EternalBlue`, `Kill Switch`, `Ransom`, and `NotPetya`.
 * **Instant Response:** Zero latency; runs entirely client-side.
 
 ### Interactive Forensic Data
-* **Executive Brief Generator:** Auto-generates C-Suite summaries of the incident.
+* **Executive Brief Generator:** Provides C-Suite summaries of the incident.
 * **Live Stat Counters:** Animated visualization of the infection scale (200k+ systems) and financial impact ($4B+).
 * **IoC Database:** Tabbed interface displaying File Hashes (SHA-256), Network Indicators, and Ransom Note details.
 
@@ -38,7 +38,7 @@ Instead of reading a static PDF report, users interact with a **Simulated AI Ope
 
 ## Technical Architecture
 
-This project follows a **Serverless, Client-Side Architecture** for maximum security and performance.
+This project follows a **Static, Client-Side Architecture** for security and performance.
 
 * **Frontend:** Semantic HTML5
 * **Styling:** Tailwind CSS (via CDN for portability)
@@ -55,7 +55,7 @@ No build steps required. This is a "drop-in" deployment.
 
 1.  **Clone the repository**
     ```bash
-    git clone [https://github.com/8-BitRhyon/wannacry-dashboard.git](https://github.com/8-BitRhyon/wannacry-dashboard.git)
+    git clone https://github.com/8-BitRhyon/wannacry-dashboard.git
     ```
 
 2.  **Open the folder**
